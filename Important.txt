@@ -1,0 +1,5 @@
+🚧 Development Status & Contributions
+Killfish Chess is currently under active development. ♟️
+Features are continuously being improved, bugs are being fixed, and new ideas are being explored. Some features may be incomplete or unstable.
+🤝 Contributions are welcome and needed! Whether you're a developer, chess enthusiast, tester, or UI/UX designer, your feedback, bug reports, feature suggestions, and code contributions can help make Killfish better.
+Help us build something extraordinary. Every contribution counts. 💙
