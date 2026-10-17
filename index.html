@@ -2108,4 +2108,69 @@ button:disabled{opacity:.58;cursor:not-allowed}
  try{new MutationObserver(records=>{for(const r of records)for(const n of r.addedNodes){if(n.nodeType===1){mark(n);n.querySelectorAll?.(overlaySelector).forEach(mark)}}}).observe(document.body,{childList:true,subtree:true})}catch(_){ }
 })();
 </script>
+
+<style id="kf-testv2-mobile-board-fix">
+/* Test V2 mobile fix: keep player panels above/below the board so the board gets the touch area. */
+@media (max-width: 520px) and (orientation: portrait) {
+  body.kfNativeWorkspace #bw, body[data-kfpage="game"] #bw {
+    flex-direction: column !important; align-items: stretch !important;
+    width: min(calc(100vw - 18px), calc(100dvh - 205px)) !important;
+    max-width: 700px !important; height: auto !important; gap: 7px !important;
+  }
+  body.kfNativeWorkspace #pt, body.kfNativeWorkspace #pb,
+  body[data-kfpage="game"] #pt, body[data-kfpage="game"] #pb {
+    width: 100% !important; min-width: 0 !important; min-height: 38px !important;
+    height: auto !important; flex: none !important;
+  }
+  body.kfNativeWorkspace #bx, body[data-kfpage="game"] #bx {
+    width: 100% !important; min-width: 0 !important; flex: none !important;
+  }
+  body.kfNativeWorkspace #bd, body[data-kfpage="game"] #bd {
+    width: min(100%, 92vw, calc(100dvh - 260px)) !important;
+    max-width: 100% !important; height: auto !important; aspect-ratio: 1 / 1 !important;
+    margin-inline: auto !important;
+  }
+}
+</style>
+
+
+<style id="kf-polish-achievements-v1">
+:root{--kf-accent:#00eaff;--kf-panel:rgba(18,20,28,.96)}
+button,.kfActionGrid button,.kfBotProfile,.lessonCard,.kcWaypoint{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+button:focus-visible,[role=button]:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--kf-accent)!important;outline-offset:3px}
+.kfAuthBox,.card,.courseCard,.lessonCard{overflow-wrap:anywhere;min-width:0}
+.kfAuthBox{max-height:min(92dvh,900px);overflow-y:auto;overscroll-behavior:contain}
+.kfBotProfiles{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.kfBotProfile{min-height:68px;text-align:left;border-radius:12px;transition:border-color .15s,transform .15s}
+.kfBotProfile:active{transform:scale(.99)}
+.kfAchievementGrid{grid-template-columns:repeat(auto-fit,minmax(min(100%,135px),1fr))}
+.kfAchievement{min-width:0;overflow-wrap:anywhere}
+.kfAchievement.locked{filter:saturate(.5);opacity:.76}
+.kfAchievement.earned{border-color:rgba(0,234,255,.55);box-shadow:inset 0 0 0 1px rgba(0,234,255,.10)}
+.kfMilestoneGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:10px;margin-top:12px}
+.kfMilestone{border:1px solid var(--border,rgba(150,160,180,.22));border-radius:13px;padding:13px;min-width:0;background:rgba(127,127,127,.055)}
+.kfMilestone strong{display:block;margin:5px 0}.kfMilestone small{display:block;opacity:.8;line-height:1.4}
+.kfMilestone .kfMeter{height:5px;border-radius:8px;background:rgba(127,127,127,.2);overflow:hidden;margin-top:10px}.kfMilestone .kfMeter i{display:block;height:100%;background:var(--kf-accent);max-width:100%}
+.kfReleaseCheck{display:flex;gap:9px;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(127,127,127,.18)}
+.kfReleaseCheck:last-child{border-bottom:0}.kfReleaseCheck b{display:block}.kfReleaseCheck small{opacity:.78}
+@media(max-width:520px){.kfAuthBox{width:calc(100vw - 20px)!important;padding:16px!important}.kfBotPicker{gap:10px}.kfBotProfile{padding:11px!important}.kfAchievementGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+<script id="kf-polish-achievements-release-gate">
+(()=>{'use strict';
+ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const getStats=()=>{const s=typeof ST!=='undefined'&&ST&&typeof ST==='object'?ST:{};const k=window.Killfish?.K;let lessons=0,total=0;try{for(const t of (typeof TIERS!=='undefined'&&Array.isArray(TIERS)?TIERS:[])){total+=t.L?.length||0;lessons+=(t.L||[]).filter(l=>s.lp&&s.lp[l.id]).length}}catch(_){}const days=Object.keys(s.dp||{}).length;return{games:Number(s.g)||0,wins:Number(s.w)||0,draws:Number(s.d)||0,losses:Number(s.l)||0,puzzles:Number(s.pt)||0,puzzleRating:Number(s.pr)||800,bestStreak:Number(s.bs)||0,dailyDays:days,lessons,total,streak:Number(typeof window.streak==='function'?window.streak():0)||0,units:Object.keys((()=>{try{return JSON.parse(localStorage.getItem('kf_curriculum_v1')||'{}').done||{}}catch(_){return{}}})()).filter(k=>{try{return JSON.parse(localStorage.getItem('kf_curriculum_v1')||'{}').done[k]}catch(_){return false}}).length,engine:window.KillfishArchitecture?.engine,legacy:!!k}};
+ function milestoneCard(){const s=getStats();const items=[
+  ['♟','First Game',s.games,1,'Finish a game'],['🏆','First Win',s.wins,1,'Win a game'],['🎯','Puzzle Starter',s.puzzles,1,'Solve your first puzzle'],['🎯','Tactician',s.puzzles,10,'Solve 10 puzzles'],['📅','Daily Regular',s.dailyDays,7,'Solve daily puzzles on 7 days'],['📚','Scholar',s.lessons,10,'Complete 10 lessons'],['🔥','Streak Master',s.bestStreak,7,'Reach a 7-day best streak'],['♜','Veteran',s.games,100,'Play 100 games'],['⭐','Puzzle Climber',s.puzzleRating,1200,'Reach puzzle rating 1200'],['🗺️','Trailblazer',s.units,10,'Complete 10 learning units'],['⚖️','Seasoned Player',s.games,25,'Finish 25 games'],['🎓','Course Graduate',s.lessons,Math.max(1,s.total),'Complete all lessons']
+ ];const earned=items.filter(x=>x[2]>=x[3]).length;return `<div class="card" id="kfMilestoneAchievements"><div class="row" style="justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h3 style="margin:0">🏅 Achievement Hall</h3><b>${earned}/${items.length} unlocked</b></div><p class="mu">Achievements are calculated from saved progress on this device. Locked badges unlock automatically when their conditions are met.</p><div class="kfMilestoneGrid">${items.map(([icon,name,value,target,desc])=>{const ok=value>=target,pct=Math.max(0,Math.min(100,Math.round(value/Math.max(1,target)*100)));return `<article class="kfMilestone ${ok?'earned':'locked'}"><div>${icon} ${ok?'✓':'🔒'}</div><strong>${esc(name)}</strong><small>${esc(desc)}</small><small>${ok?'Unlocked':`${Math.min(value,target)} / ${target}`}</small><div class="kfMeter"><i style="width:${pct}%"></i></div></article>`}).join('')}</div></div>`}
+ // Extend the existing profile/home achievements without replacing game logic.
+ try{if(typeof window.pHome==='function'&&!window.pHome.__kfMilestones){const old=window.pHome;const next=function(){return old.apply(this,arguments)+milestoneCard()};next.__kfMilestones=true;window.pHome=next}}catch(_){ }
+ window.KFUI=window.KFUI||{};
+ window.KFUI.openAchievements=function(){const html=milestoneCard();try{if(typeof window.modal==='function')window.modal(html+'<button onclick="KFUI.closeModal()">Close</button>');else{const d=document.createElement('div');d.className='kfAuthOverlay';d.id='kfAchievementOverlay';d.innerHTML='<div class="kfAuthBox" style="text-align:left">'+html+'<button onclick="document.getElementById(\'kfAchievementOverlay\')?.remove()">Close</button></div>';document.body.appendChild(d)}}catch(e){console.error('[Killfish] Achievement view failed',e)}};
+ window.KFUI.releaseChecks=function(){const checks=[];const add=(name,ok,detail)=>checks.push({name,ok:!!ok,detail});const s=getStats();add('App shell loaded',!!document.querySelector('body')&&!!document.querySelector('title'),'DOM shell present');add('Core chess module',!!window.Killfish?.K,'Killfish core object detected');add('Engine orchestrator',!!window.KillfishArchitecture?.engine,'Orchestrator present; actual engine search requires live runtime testing');add('Stockfish loader source',typeof window.loadHostedStockfish==='function'||!!document.querySelector('script[src*="stockfish"]')||String(document.documentElement.innerHTML).includes('EMBEDDED_STOCKFISH19_JS'),'Loader/source indicator only; not proof the engine starts');add('Bot chooser',typeof window.KFUI?.openPlay==='function'&&typeof window.KFUI?.selectBot==='function','UI callbacks registered');add('Achievements',typeof milestoneCard==='function'&&milestoneCard().includes('Achievement Hall'),'Achievement conditions render');let storage=false;try{const key='kf_release_gate_probe';localStorage.setItem(key,'1');storage=localStorage.getItem(key)==='1';localStorage.removeItem(key)}catch(_){}add('Local storage writable',storage,'Browser storage permission/quota check');add('Responsive viewport',window.innerWidth>0&&window.innerHeight>0,`${window.innerWidth}×${window.innerHeight}`);add('No uncaught errors recorded',!(window.__kfDebugErrors||[]).length,`${(window.__kfDebugErrors||[]).length} recorded error(s) since patch load`);const passed=checks.filter(x=>x.ok).length;const body=`<h2>Release gate · local checks</h2><p>Result: <b>${passed}/${checks.length} checks passed</b>. These checks verify local presence and basic storage only; they do not certify gameplay, browser-worker startup, mobile performance, or deployment.</p>${checks.map(c=>`<div class="kfReleaseCheck"><span>${c.ok?'✅':'⚠️'}</span><div><b>${esc(c.name)}</b><small>${esc(c.detail)}</small></div></div>`).join('')}<p class="mu">A release is still NO-GO until browser interaction tests and Stockfish JS/WASM startup are verified on target devices.</p><button onclick="KFUI.closeModal()">Close</button>`;try{if(typeof window.modal==='function')window.modal(body);else{const d=document.createElement('div');d.className='kfAuthOverlay';d.id='kfReleaseGateOverlay';d.innerHTML='<div class="kfAuthBox" style="text-align:left">'+body+'</div>';document.body.appendChild(d)}}catch(e){console.error('[Killfish] Release gate failed',e)}return{passed,total:checks.length,checks};};
+ // Add entry points without overwriting existing navigation handlers.
+ try{const settings=window.KFUI.settingPanel;if(typeof settings==='function'&&!settings.__kfGateWrapped){const wrapped=function(){const r=settings.apply(this,arguments);return r};wrapped.__kfGateWrapped=true;window.KFUI.settingPanel=wrapped}}catch(_){ }
+ try{window.KillfishMilestones=Object.freeze({version:'1.1.0',stats:getStats,render:milestoneCard,checks:()=>window.KFUI.releaseChecks()})}catch(_){window.KillfishMilestones={version:'1.1.0',stats:getStats,render:milestoneCard,checks:()=>window.KFUI.releaseChecks()}}
+})();
+</script>
+
 </body></html>
